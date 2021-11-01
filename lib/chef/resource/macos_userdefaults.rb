@@ -18,6 +18,7 @@
 require_relative "../resource"
 require "chef-utils/dist" unless defined?(ChefUtils::Dist)
 require "corefoundation" if RUBY_PLATFORM.match?(/darwin/)
+require "ffi" unless defined?(FFI)
 autoload :Plist, "plist"
 
 class Chef
@@ -78,7 +79,7 @@ class Chef
         description: "The preference key.",
         required: true
 
-      property :host, [String, Symbol],
+      property :host, [String, Symbol, FFI::Pointer],
         description: "Set either :current, :all or a hostname to set the user default at the host level.",
         desired_state: false,
         introduced: "16.3",
@@ -94,7 +95,7 @@ class Chef
         desired_state: false,
         deprecated: true
 
-      property :user, [String, Symbol],
+      property :user, [String, Symbol, FFI::Pointer],
         description: "The system user that the default will be applied to. Set :current for current user, :all for all users or pass a valid username",
         desired_state: false,
         coerce: proc { |value| to_cf_user(value) }
